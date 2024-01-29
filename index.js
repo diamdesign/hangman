@@ -14,94 +14,28 @@ const scaffold = document.getElementById("scaffold");
 const hbody = document.getElementById("body");
 
 const hangwordsList = [
-	{
-		name: "Banana",
-		tip: "A yellow fruit",
-	},
-	{
-		name: "Constipated",
-		tip: "An uncomfortable feeling",
-	},
-	{
-		name: "Destruction",
-		tip: "Causing severe damage or harm.",
-	},
-	{
-		name: "Darkness",
-		tip: "Absence of light",
-	},
-	{
-		name: "Living",
-		tip: "Excisting",
-	},
-	{
-		name: "Waters",
-		tip: "Wet",
-	},
-	{
-		name: "Elephant",
-		tip: "A large mammal with tusks and a trunk",
-	},
-	{
-		name: "Computer",
-		tip: "Electronic device for processing data",
-	},
-	{
-		name: "Adventure",
-		tip: "An exciting or daring experience",
-	},
-	{
-		name: "Mountain",
-		tip: "A large landform",
-	},
-	{
-		name: "Whisper",
-		tip: "Soft-spoken words",
-	},
-	{
-		name: "Sunshine",
-		tip: "Radiant light from the sun",
-	},
-	{
-		name: "Giraffe",
-		tip: "Tall African mammal with a long neck",
-	},
-	{
-		name: "Sapphire",
-		tip: "A precious blue gemstone",
-	},
-	{
-		name: "Marathon",
-		tip: "A long-distance running race",
-	},
-	{
-		name: "Firefly",
-		tip: "Bioluminescent insect",
-	},
-	{
-		name: "Voyage",
-		tip: "A long journey or trip",
-	},
-	{
-		name: "Silhouette",
-		tip: "Outline of a person or object",
-	},
-	{
-		name: "Jazz",
-		tip: "Musical genre with improvisation",
-	},
-	{
-		name: "Galaxy",
-		tip: "A vast system of stars",
-	},
-	{
-		name: "Champion",
-		tip: "Winner or top performer",
-	},
-	{
-		name: "Cinnamon",
-		tip: "A spice with a sweet flavor",
-	},
+	{ name: "Banana", tip: "A yellow fruit" },
+	{ name: "Constipated", tip: "An uncomfortable feeling" },
+	{ name: "Destruction", tip: "Causing severe damage or harm." },
+	{ name: "Darkness", tip: "Absence of light" },
+	{ name: "Living", tip: "Excisting" },
+	{ name: "Waters", tip: "Wet" },
+	{ name: "Elephant", tip: "A large mammal with tusks and a trunk" },
+	{ name: "Computer", tip: "Electronic device for processing data" },
+	{ name: "Adventure", tip: "An exciting or daring experience" },
+	{ name: "Mountain", tip: "A large landform" },
+	{ name: "Whisper", tip: "Soft-spoken words" },
+	{ name: "Sunshine", tip: "Radiant light from the sun" },
+	{ name: "Giraffe", tip: "Tall African mammal with a long neck" },
+	{ name: "Sapphire", tip: "A precious blue gemstone" },
+	{ name: "Marathon", tip: "A long-distance running race" },
+	{ name: "Firefly", tip: "Bioluminescent insect" },
+	{ name: "Voyage", tip: "A long journey or trip" },
+	{ name: "Silhouette", tip: "Outline of a person or object" },
+	{ name: "Jazz", tip: "Musical genre with improvisation" },
+	{ name: "Galaxy", tip: "A vast system of stars" },
+	{ name: "Champion", tip: "Winner or top performer" },
+	{ name: "Cinnamon", tip: "A spice with a sweet flavor" },
 	{ name: "Cinnamon", tip: "Sweet spice" },
 	{ name: "Majestic", tip: "Grand and impressive" },
 	{ name: "Celestial", tip: "Relating to the sky or outer space" },
