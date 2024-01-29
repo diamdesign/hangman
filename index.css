@@ -20,6 +20,10 @@ body {
 	transition: background 0.5s ease-in;
 }
 
+h1 {
+	margin-bottom: 20px;
+}
+
 .hangman {
 	margin-bottom: 20px;
 	transform-origin: bottom center;

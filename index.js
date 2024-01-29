@@ -13,14 +13,114 @@ const arms = document.getElementById("legs");
 const scaffold = document.getElementById("scaffold");
 const hbody = document.getElementById("body");
 
-const hangwordsList = ["Banana", "Constipated", "Destruction", "Darkness", "Living", "Waters"];
-const hangwords = hangwordsList.map((word) => word.toUpperCase());
-const hangword = hangwords[Math.floor(Math.random() * hangwords.length)];
-// console.log(hangword);
+const hangwordsList = [
+	{
+		name: "Banana",
+		tip: "A yellow fruit",
+	},
+	{
+		name: "Constipated",
+		tip: "An uncomfortable feeling",
+	},
+	{
+		name: "Destruction",
+		tip: "Causing severe damage or harm.",
+	},
+	{
+		name: "Darkness",
+		tip: "Absence of light",
+	},
+	{
+		name: "Living",
+		tip: "Excisting",
+	},
+	{
+		name: "Waters",
+		tip: "Wet",
+	},
+	{
+		name: "Elephant",
+		tip: "A large mammal with tusks and a trunk",
+	},
+	{
+		name: "Computer",
+		tip: "Electronic device for processing data",
+	},
+	{
+		name: "Adventure",
+		tip: "An exciting or daring experience",
+	},
+	{
+		name: "Mountain",
+		tip: "A large landform",
+	},
+	{
+		name: "Whisper",
+		tip: "Soft-spoken words",
+	},
+	{
+		name: "Sunshine",
+		tip: "Radiant light from the sun",
+	},
+	{
+		name: "Giraffe",
+		tip: "Tall African mammal with a long neck",
+	},
+	{
+		name: "Sapphire",
+		tip: "A precious blue gemstone",
+	},
+	{
+		name: "Marathon",
+		tip: "A long-distance running race",
+	},
+	{
+		name: "Firefly",
+		tip: "Bioluminescent insect",
+	},
+	{
+		name: "Voyage",
+		tip: "A long journey or trip",
+	},
+	{
+		name: "Silhouette",
+		tip: "Outline of a person or object",
+	},
+	{
+		name: "Jazz",
+		tip: "Musical genre with improvisation",
+	},
+	{
+		name: "Galaxy",
+		tip: "A vast system of stars",
+	},
+	{
+		name: "Champion",
+		tip: "Winner or top performer",
+	},
+	{
+		name: "Cinnamon",
+		tip: "A spice with a sweet flavor",
+	},
+];
+
+const randomIndex = Math.floor(Math.random() * hangwordsList.length);
+const randomWord = hangwordsList[randomIndex];
+
+const randomName = randomWord.name.toUpperCase();
+const randomTip = randomWord.tip;
+
+/* console.log("Random Word: " + randomName); */
+console.log("Tip: " + randomTip);
+
+const header = document.getElementsByTagName("h1")[0]; // Access the first h1 element
+
+// Assuming you have a randomTip variable
+header.textContent = randomTip;
 
 const insertLetters = document.querySelector(".letters");
 
-for (let i = 0; i < hangword.length; i++) {
+for (let i = 0; i < randomName.length; i++) {
 	let html = `<span></span>`;
 	insertLetters.insertAdjacentHTML("beforeend", html);
 }
@@ -67,12 +167,12 @@ document.addEventListener("keydown", (e) => {
 			const newLetter = `<span>${letter}</span>`;
 			letters.insertAdjacentHTML("beforeend", newLetter);
 			writtenLetters.push(letter);
-			if (hangword.includes(letter)) {
+			if (randomName.includes(letter)) {
 				console.log("Letter is included...");
 				// Find all indices where the inputLetter occurs in the hangword
 				const indices = [];
-				for (let i = 0; i < hangword.length; i++) {
-					if (hangword[i] === letter) {
+				for (let i = 0; i < randomName.length; i++) {
+					if (randomName[i] === letter) {
 						indices.push(i);
 					}
 				}
