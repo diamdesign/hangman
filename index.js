@@ -16,7 +16,7 @@ const hbody = document.getElementById("body");
 const hangwordsList = ["Banana", "Constipated", "Destruction", "Darkness", "Living", "Waters"];
 const hangwords = hangwordsList.map((word) => word.toUpperCase());
 const hangword = hangwords[Math.floor(Math.random() * hangwords.length)];
-console.log(hangword);
+// console.log(hangword);
 
 const insertLetters = document.querySelector(".letters");
 
