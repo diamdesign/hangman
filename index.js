@@ -1,6 +1,11 @@
-const letters = document.querySelector(".written-letters");
+var letters = document.querySelector(".written-letters");
 const bodyTag = document.body;
 letters.innerHTML = "";
+
+var points = 0;
+var wins = 0;
+var loss = 0;
+var ratio = 0;
 
 let writtenLetters = [];
 
@@ -57,26 +62,35 @@ const hangwordsList = [
 	{ name: "Pinnacle", tip: "Highest point or achievement" },
 ];
 
-const randomIndex = Math.floor(Math.random() * hangwordsList.length);
-const randomWord = hangwordsList[randomIndex];
+var randomName = "";
+var randomTip = "";
+const header = document.getElementsByTagName("h1")[0];
+var insertLetters = document.querySelector(".letters");
 
-const randomName = randomWord.name.toUpperCase();
-const randomTip = randomWord.tip;
+function getRandomWord() {
+	let randomIndex = Math.floor(Math.random() * hangwordsList.length);
+	let randomWord = hangwordsList[randomIndex];
 
-/* console.log("Random Word: " + randomName); */
-console.log("Tip: " + randomTip);
+	randomName = randomWord.name.toUpperCase();
+	randomTip = randomWord.tip;
 
-const header = document.getElementsByTagName("h1")[0]; // Access the first h1 element
+	/* console.log("Random Word: " + randomName); */
+	console.log("Tip: " + randomTip);
 
-// Assuming you have a randomTip variable
-header.textContent = randomTip;
+	// Assuming you have a randomTip variable
+	header.textContent = randomTip;
 
-const insertLetters = document.querySelector(".letters");
-
-for (let i = 0; i < randomName.length; i++) {
-	let html = `<span></span>`;
-	insertLetters.insertAdjacentHTML("beforeend", html);
+	for (let i = 0; i < randomName.length; i++) {
+		let html = `<span></span>`;
+		insertLetters.insertAdjacentHTML("beforeend", html);
+	}
 }
+getRandomWord();
+
+const winsHTML = document.querySelector(".wins span");
+const lossHTML = document.querySelector(".loss span");
+const ratioHTML = document.querySelector(".ratio span");
+const pointsHTML = document.querySelector(".points span");
 
 function checkWin() {
 	// Get all spans inside insertLetters
@@ -93,20 +107,40 @@ function checkWin() {
 	if (allActive) {
 		alert("You won!");
 		console.log("You win!");
+		wins += 1;
+		winsHTML.innerHTML = wins;
+		let numberOfSpans = letters.children.length;
+		console.log(numberOfSpans);
+		// Calculate points based on the length of the word and deduct 100 points for each span
+		let newPoints = (randomName.length - numberOfSpans + randomName.length) * 100;
+		console.log(randomName.length);
+		console.log(newPoints);
+		points += newPoints;
+		pointsHTML.innerHTML = points;
+		updateRatio();
 		setTimeout(() => {
-			location.reload();
-		}, 1000);
+			resetGame();
+		}, 400);
+
 		// Add your win logic here
 	} else if (isBodyVisible) {
 		alert("Game over!");
 		console.log("Game over!");
+		loss += 1;
+		lossHTML.innerHTML = loss;
+		updateRatio();
 		setTimeout(() => {
-			location.reload();
-		}, 1000);
+			resetGame();
+		}, 400);
 		// Add your game over logic here
 	} else {
 		console.log("Not all letters are active yet.");
 	}
+}
+
+function updateRatio() {
+	let newRatio = wins / loss;
+	ratioHTML.innerHTML = newRatio.toFixed(2);
 }
 
 document.addEventListener("keydown", (e) => {
@@ -182,3 +216,19 @@ document.addEventListener("keydown", (e) => {
 		console.log("Letter already written:", letter);
 	}
 });
+
+function resetGame() {
+	letters.innerHTML = "";
+	writtenLetters = [];
+	ground.style.display = "none";
+	head.style.display = "none";
+	legs.style.display = "none";
+	arms.style.display = "none";
+	scaffold.style.display = "none";
+	hbody.style.display = "none";
+	hangmanArray = ["ground", "head", "scaffold", "arms", "legs", "body"];
+	insertLetters.innerHTML = "";
+	bodyTag.style.background =
+		"radial-gradient(circle, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 1) 100%)";
+	getRandomWord();
+}
