@@ -146,3 +146,12 @@ p {
 	right: 20px;
 	text-align: right;
 }
+
+.multiplier {
+	position: fixed;
+	top: 20px;
+	left: 50%;
+	transform: translateX(-50%);
+	font-weight: bold;
+	font-size: 42px;
+}

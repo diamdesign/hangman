@@ -2,6 +2,8 @@ var letters = document.querySelector(".written-letters");
 const bodyTag = document.body;
 letters.innerHTML = "";
 
+var gameover = false;
+var multiplier = 1;
 var points = 0;
 var wins = 0;
 var loss = 0;
@@ -60,12 +62,53 @@ const hangwordsList = [
 	{ name: "Symphony", tip: "Orchestral composition" },
 	{ name: "Glisten", tip: "Shine with a sparkling light" },
 	{ name: "Pinnacle", tip: "Highest point or achievement" },
+	{ name: "Joy", tip: "Feeling of great happiness" },
+	{ name: "Peace", tip: "State of tranquility" },
+	{ name: "Hope", tip: "Optimistic expectation" },
+	{ name: "Smile", tip: "Facial expression of happiness" },
+	{ name: "Dream", tip: "Series of thoughts during sleep" },
+	{ name: "Laugh", tip: "Expressing amusement" },
+	{ name: "Friend", tip: "Companion with mutual affection" },
+	{ name: "Sun", tip: "Source of light and warmth" },
+	{ name: "Moon", tip: "Natural satellite of Earth" },
+	{ name: "Star", tip: "Luminous celestial body" },
+	{ name: "Ocean", tip: "Vast body of saltwater" },
+	{ name: "Tree", tip: "Tall plant with a trunk" },
+	{ name: "Book", tip: "Written or printed work" },
+	{ name: "Music", tip: "Art form of sound expression" },
+	{ name: "Color", tip: "Visual perception" },
+	{ name: "Love", tip: "Strong affection or deep romantic feeling" },
+	{ name: "Nature", tip: "Physical world and everything in it" },
+	{ name: "Cloud", tip: "Visible mass of water droplets" },
+	{ name: "Rainbow", tip: "Meteorological phenomenon" },
+	{ name: "Butterfly", tip: "Insect with colorful wings" },
+	{ name: "Abraham", tip: "Patriarch and father of many nations" },
+	{ name: "Sarah", tip: "Wife of Abraham and mother of Isaac" },
+	{ name: "Moses", tip: "Prophet and leader who received the Ten Commandments" },
+	{ name: "David", tip: "Shepherd, musician, and second king of Israel" },
+	{ name: "Solomon", tip: "Son of David, known for wisdom and building the temple" },
+	{ name: "Ruth", tip: "Faithful daughter-in-law and great-grandmother of David" },
+	{ name: "Samson", tip: "Judge known for strength and long hair" },
+	{ name: "Delilah", tip: "Woman who betrayed Samson by cutting his hair" },
+	{ name: "Esther", tip: "Jewish queen who saved her people from genocide" },
+	{ name: "Mordecai", tip: "Uncle and guardian of Esther" },
+	{ name: "Job", tip: "Righteous man who faced great suffering" },
+	{ name: "Naomi", tip: "Mother-in-law of Ruth" },
+	{ name: "Boaz", tip: "Kinsman of Ruth and eventual husband" },
+	{ name: "Elijah", tip: "Prophet who confronted Baal prophets on Mount Carmel" },
+	{ name: "Elisha", tip: "Prophet and successor of Elijah" },
+	{ name: "Mary", tip: "Mother of Jesus" },
+	{ name: "Joseph", tip: "Husband of Mary and earthly father of Jesus" },
+	{ name: "John", tip: "Disciple of Jesus, also known as the beloved disciple" },
+	{ name: "Peter", tip: "Disciple and leader of the apostles" },
+	{ name: "Paul", tip: "Apostle and prolific writer of the New Testament" },
 ];
 
 var randomName = "";
 var randomTip = "";
 const header = document.getElementsByTagName("h1")[0];
 var insertLetters = document.querySelector(".letters");
+const multiplierHTML = document.querySelector(".multiplier");
 
 function getRandomWord() {
 	let randomIndex = Math.floor(Math.random() * hangwordsList.length);
@@ -85,6 +128,7 @@ function getRandomWord() {
 		insertLetters.insertAdjacentHTML("beforeend", html);
 	}
 }
+
 getRandomWord();
 
 const winsHTML = document.querySelector(".wins span");
@@ -105,14 +149,16 @@ function checkWin() {
 	console.log("isBodyVisible:", isBodyVisible);
 
 	if (allActive) {
-		alert("You won!");
+		multiplier += 1;
+		multiplierHTML.innerHTML = "x" + multiplier;
 		console.log("You win!");
+		addSound("win");
 		wins += 1;
 		winsHTML.innerHTML = wins;
 		let numberOfSpans = letters.children.length;
 		console.log(numberOfSpans);
 		// Calculate points based on the length of the word and deduct 100 points for each span
-		let newPoints = (randomName.length - numberOfSpans + randomName.length) * 100;
+		let newPoints = (randomName.length - numberOfSpans + randomName.length) * 100 * multiplier;
 		console.log(randomName.length);
 		console.log(newPoints);
 		points += newPoints;
@@ -124,14 +170,23 @@ function checkWin() {
 
 		// Add your win logic here
 	} else if (isBodyVisible) {
-		alert("Game over!");
+		multiplier = 1;
+		multiplierHTML.innerHTML = "";
 		console.log("Game over!");
+		gameover = true;
+		addSound("loss");
+		setTimeout(function () {
+			let allAudio = document.querySelectorAll("audio");
+			allAudio.forEach((audioElement) => audioElement.remove());
+		}, 2500);
+
 		loss += 1;
 		lossHTML.innerHTML = loss;
 		updateRatio();
 		setTimeout(() => {
+			gameover = false;
 			resetGame();
-		}, 400);
+		}, 2500);
 		// Add your game over logic here
 	} else {
 		console.log("Not all letters are active yet.");
@@ -143,81 +198,112 @@ function updateRatio() {
 	ratioHTML.innerHTML = newRatio.toFixed(2);
 }
 
+const audioKey = document.getElementById("audio-key");
+let audioNo = 0;
+
+function addSound(soundfile) {
+	audioNo += 1;
+	let audioName = "audio-key" + audioNo;
+	let audio = `<audio id="${audioName}">\
+				<source src="sound/${soundfile}.mp3" type="audio/mpeg" />\
+			</audio>`;
+	document.body.insertAdjacentHTML("beforeend", audio);
+	let newElement = document.getElementById(audioName);
+	newElement.play();
+
+	let timeout = 800;
+
+	if (soundfile === "win" || soundfile === "loss") {
+		timeout = 5000;
+	}
+
+	setTimeout(function () {
+		newElement.remove();
+	}, timeout);
+}
+
 document.addEventListener("keydown", (e) => {
 	e.preventDefault();
 
-	if (/^[a-zA-Z ]$/.test(e.key)) {
-		let letter = e.key.toUpperCase();
+	if (!gameover) {
+		addSound("key");
+		if (/^[a-zA-Z ]$/.test(e.key)) {
+			let letter = e.key.toUpperCase();
 
-		if (!writtenLetters.includes(letter)) {
-			console.log("New letter:", letter);
-			const newLetter = `<span>${letter}</span>`;
-			letters.insertAdjacentHTML("beforeend", newLetter);
-			writtenLetters.push(letter);
-			if (randomName.includes(letter)) {
-				console.log("Letter is included...");
-				// Find all indices where the inputLetter occurs in the hangword
-				const indices = [];
-				for (let i = 0; i < randomName.length; i++) {
-					if (randomName[i] === letter) {
-						indices.push(i);
+			if (!writtenLetters.includes(letter)) {
+				console.log("New letter:", letter);
+				const newLetter = `<span>${letter}</span>`;
+				letters.insertAdjacentHTML("beforeend", newLetter);
+				writtenLetters.push(letter);
+				if (randomName.includes(letter)) {
+					addSound("correct");
+					console.log("Letter is included...");
+					// Find all indices where the inputLetter occurs in the hangword
+					const indices = [];
+					for (let i = 0; i < randomName.length; i++) {
+						if (randomName[i] === letter) {
+							indices.push(i);
+						}
+					}
+
+					// Update the spans at the identified indices
+					indices.forEach((index) => {
+						const spanAtIndex = insertLetters.children[index];
+						if (spanAtIndex) {
+							spanAtIndex.textContent = letter;
+							spanAtIndex.classList.add("active");
+						}
+					});
+				} else {
+					addSound("wrong");
+					const hangedman = document.querySelector(".hangman");
+					hangedman.classList.add("shake");
+					setTimeout(() => {
+						hangedman.classList.remove("shake");
+					}, 300);
+					if (hangmanArray[0] === "ground") {
+						ground.style.display = "block";
+						hangmanArray.shift();
+						bodyTag.style.background =
+							"radial-gradient(circle, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 1) 100%)";
+					} else if (hangmanArray[0] === "head") {
+						head.style.display = "block";
+						bodyTag.style.background =
+							"radial-gradient(circle, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 1) 100%)";
+						hangmanArray.shift();
+					} else if (hangmanArray[0] === "scaffold") {
+						bodyTag.style.background =
+							"radial-gradient(circle, rgba(0, 0, 0, 0) 30%, rgba(0, 0, 0, 1) 90%)";
+						scaffold.style.display = "block";
+						hangmanArray.shift();
+					} else if (hangmanArray[0] === "arms") {
+						arms.style.display = "block";
+						bodyTag.style.background =
+							"radial-gradient(circle, rgba(0, 0, 0, 0) 30%, rgba(0, 0, 0, 1) 80%)";
+						hangmanArray.shift();
+					} else if (hangmanArray[0] === "legs") {
+						legs.style.display = "block";
+						bodyTag.style.background =
+							"radial-gradient(circle, rgba(0, 0, 0, 0) 30%, rgba(0, 0, 0, 1) 70%)";
+						hangmanArray.shift();
+					} else if (hangmanArray[0] === "body") {
+						hbody.style.display = "block";
+						bodyTag.style.background =
+							"radial-gradient(circle, rgba(0, 0, 0, 0) 20%, rgba(0, 0, 0, 1) 60%)";
+						hangmanArray.shift();
 					}
 				}
-
-				// Update the spans at the identified indices
-				indices.forEach((index) => {
-					const spanAtIndex = insertLetters.children[index];
-					if (spanAtIndex) {
-						spanAtIndex.textContent = letter;
-						spanAtIndex.classList.add("active");
-					}
-				});
-			} else {
-				const hangedman = document.querySelector(".hangman");
-				hangedman.classList.add("shake");
-				setTimeout(() => {
-					hangedman.classList.remove("shake");
-				}, 300);
-				if (hangmanArray[0] === "ground") {
-					ground.style.display = "block";
-					hangmanArray.shift();
-					bodyTag.style.background =
-						"radial-gradient(circle, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 1) 100%)";
-				} else if (hangmanArray[0] === "head") {
-					head.style.display = "block";
-					bodyTag.style.background =
-						"radial-gradient(circle, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 1) 100%)";
-					hangmanArray.shift();
-				} else if (hangmanArray[0] === "scaffold") {
-					bodyTag.style.background =
-						"radial-gradient(circle, rgba(0, 0, 0, 0) 30%, rgba(0, 0, 0, 1) 90%)";
-					scaffold.style.display = "block";
-					hangmanArray.shift();
-				} else if (hangmanArray[0] === "arms") {
-					arms.style.display = "block";
-					bodyTag.style.background =
-						"radial-gradient(circle, rgba(0, 0, 0, 0) 30%, rgba(0, 0, 0, 1) 80%)";
-					hangmanArray.shift();
-				} else if (hangmanArray[0] === "legs") {
-					legs.style.display = "block";
-					bodyTag.style.background =
-						"radial-gradient(circle, rgba(0, 0, 0, 0) 30%, rgba(0, 0, 0, 1) 70%)";
-					hangmanArray.shift();
-				} else if (hangmanArray[0] === "body") {
-					hbody.style.display = "block";
-					bodyTag.style.background =
-						"radial-gradient(circle, rgba(0, 0, 0, 0) 20%, rgba(0, 0, 0, 1) 60%)";
-					hangmanArray.shift();
-				}
+				checkWin();
 			}
-			checkWin();
+		} else {
+			console.log("Letter already written:", letter);
 		}
-	} else {
-		console.log("Letter already written:", letter);
 	}
 });
 
 function resetGame() {
+	audioNo = 0;
+
 	letters.innerHTML = "";
 	writtenLetters = [];
 	ground.style.display = "none";
