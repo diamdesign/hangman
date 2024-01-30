@@ -145,6 +145,46 @@ const hangwordsList = [
 	{ name: "Wholesome", tip: "Conducive to good health" },
 	{ name: "Cheerful", tip: "Full of good spirits" },
 	{ name: "Amicable", tip: "Characterized by friendliness" },
+	{ name: "Elephant", tip: "Large land mammal with a trunk" },
+	{ name: "Dolphin", tip: "Marine mammal known for its intelligence" },
+	{ name: "Kangaroo", tip: "Marsupial with powerful hind legs" },
+	{ name: "Giraffe", tip: "Tall, long-necked herbivorous mammal" },
+	{ name: "Panda", tip: "Bear native to China, known for its black and white fur" },
+	{ name: "Tiger", tip: "Large cat with distinctive orange coat and black stripes" },
+	{ name: "Lion", tip: "Large, carnivorous feline with a majestic mane" },
+	{ name: "Cheetah", tip: "Fastest land animal with spotted coat" },
+	{ name: "Gorilla", tip: "Large, powerful primate with dark fur" },
+	{ name: "Horse", tip: "Domesticated hoofed mammal often used for riding" },
+	{ name: "Koala", tip: "Australian marsupial with a diet of eucalyptus leaves" },
+	{ name: "Penguin", tip: "Flightless bird adapted to aquatic life" },
+	{ name: "Polar Bear", tip: "Large bear adapted to life in the Arctic" },
+	{ name: "Hippopotamus", tip: "Large, semi-aquatic mammal with a massive jaw" },
+	{ name: "Rhinoceros", tip: "Thick-skinned herbivore with one or two horns on its snout" },
+	{ name: "Sloth", tip: "Slow-moving arboreal mammal with a unique lifestyle" },
+	{ name: "Red Fox", tip: "Cunning mammal with distinctive reddish-brown fur" },
+	{ name: "Otter", tip: "Semiaquatic mammal known for its playful behavior" },
+	{ name: "Gray Wolf", tip: "Social carnivore native to various ecosystems" },
+	{ name: "Humpback Whale", tip: "Large marine mammal known for its distinctive songs" },
+	{ name: "Dolphin", tip: "Marine mammal known for its intelligence" },
+	{ name: "Whale Shark", tip: "Largest fish species, a filter-feeding carpet shark" },
+	{ name: "Sea Turtle", tip: "Reptile adapted to life in the sea with flippers" },
+	{ name: "Octopus", tip: "Soft-bodied cephalopod mollusk with eight arms" },
+	{ name: "Jellyfish", tip: "Gelatinous aquatic creature with trailing tentacles" },
+	{ name: "Manatee", tip: "Large, herbivorous marine mammal often called a sea cow" },
+	{ name: "Seahorse", tip: "Small marine fish with a distinctive appearance" },
+	{ name: "Penguin", tip: "Flightless bird adapted to aquatic life" },
+	{ name: "Seal", tip: "Semiaquatic mammal with flippers for swimming" },
+	{ name: "Squid", tip: "Cephalopod mollusk with a distinct head and tentacles" },
+	{ name: "Shark", tip: "Carnivorous fish with cartilaginous skeletons" },
+	{ name: "Whale", tip: "Large marine mammal" },
+	{ name: "Stingray", tip: "Flat-bodied cartilaginous fish with a long, barbed tail" },
+	{ name: "Tuna", tip: "Fast-swimming fish with a sleek, streamlined body" },
+	{ name: "Crocodile", tip: "Reptile with aquatic habits, found in tropical regions" },
+	{ name: "Sponge", tip: "Simple aquatic animal with a porous body" },
+	{ name: "Crab", tip: "Crustacean with a broad, flat body and claws" },
+	{ name: "Lobster", tip: "Large marine crustacean with a hard exoskeleton" },
+	{ name: "Man-o-War", tip: "Floating colony of hydrozoans with long tentacles" },
+	{ name: "Angelfish", tip: "Colorful marine fish with a distinctive shape" },
 ];
 
 var randomName = "";
@@ -185,6 +225,7 @@ function gameOver() {
 	console.log("Game over!");
 	gameover = true;
 	addSound("loss");
+	addSound("incorrect");
 	setTimeout(function () {
 		let allAudio = document.querySelectorAll("audio");
 		allAudio.forEach((audioElement) => audioElement.remove());
@@ -193,6 +234,7 @@ function gameOver() {
 	loss += 1;
 	lossHTML.innerHTML = loss;
 	updateRatio();
+	clearInterval(countdownInterval);
 	setTimeout(() => {
 		gameover = false;
 		resetGame();
@@ -277,6 +319,8 @@ function addSound(soundfile) {
 
 	if (soundfile === "win" || soundfile === "loss") {
 		timeout = 5000;
+	} else if (soundfile === "ticking") {
+		timeout = 3000;
 	}
 
 	setTimeout(function () {
@@ -287,6 +331,7 @@ function addSound(soundfile) {
 document.addEventListener("keydown", (e) => {
 	e.preventDefault();
 	if (musicTag.paused) {
+		musicTag.volume = 0.6;
 		musicTag.play();
 	}
 	if (!gameover) {
@@ -322,9 +367,11 @@ document.addEventListener("keydown", (e) => {
 				} else {
 					addSound("wrong");
 					const hangedman = document.querySelector(".hangman");
-					hangedman.classList.add("shake");
+					const shaker = hangedman.querySelector("svg");
+
+					shaker.classList.add("shake");
 					setTimeout(() => {
-						hangedman.classList.remove("shake");
+						shaker.classList.remove("shake");
 					}, 300);
 					if (hangmanArray[0] === "ground") {
 						ground.style.display = "block";
@@ -382,4 +429,53 @@ function resetGame() {
 	bodyTag.style.background =
 		"radial-gradient(circle, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 1) 100%)";
 	getRandomWord();
+	resetCountdown();
 }
+
+let countdownValue = 10;
+let countdownInterval;
+
+// Function to update the countdown display
+function updateCountdown() {
+	const countdownElement = document.getElementById("countdown");
+	countdownElement.textContent = countdownValue;
+}
+
+// Function to start the countdown
+function startCountdown() {
+	// Initial update
+	updateCountdown();
+
+	// Update the countdown every second
+	countdownInterval = setInterval(() => {
+		countdownValue--;
+
+		// Update the countdown display
+		updateCountdown();
+
+		if (countdownValue === 3) {
+			addSound("ticking");
+		}
+		// Check if countdown has reached 0
+		if (countdownValue === 1) {
+			setTimeout(() => {
+				// Stop the countdown
+				clearInterval(countdownInterval);
+				gameOver();
+			}, 1000);
+		}
+	}, 1000);
+}
+
+function resetCountdown() {
+	// Clear the existing interval
+	clearInterval(countdownInterval);
+
+	// Reset the countdown value
+	countdownValue = 10;
+
+	// Start a new countdown
+	startCountdown();
+}
+
+startCountdown();

@@ -57,6 +57,7 @@ h1 {
 }
 
 .hangman svg {
+	transform-origin: bottom center;
 	width: 100%;
 }
 
@@ -264,4 +265,19 @@ p {
 		opacity: 0;
 		scale: 12;
 	}
+}
+
+#countdown {
+	position: fixed;
+	content: "";
+	display: block;
+	left: 50%;
+	top: 50%;
+	transform: translateX(-50%) translateY(-50%);
+	font-size: 28vw;
+	opacity: 0.1;
+	z-index: -1;
+	text-align: center;
+	font-weight: 700;
+	mix-blend-mode: soft-light;
 }
