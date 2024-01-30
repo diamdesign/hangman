@@ -1,5 +1,8 @@
 var letters = document.querySelector(".written-letters");
 const bodyTag = document.body;
+const musicTag = document.querySelector("#music");
+const pTag = document.querySelector("p");
+
 letters.innerHTML = "";
 
 var gameover = false;
@@ -102,6 +105,46 @@ const hangwordsList = [
 	{ name: "John", tip: "Disciple of Jesus, also known as the beloved disciple" },
 	{ name: "Peter", tip: "Disciple and leader of the apostles" },
 	{ name: "Paul", tip: "Apostle and prolific writer of the New Testament" },
+	{ name: "River", tip: "Flowing watercourse" },
+	{ name: "Cloud", tip: "Collection of water vapor in the sky" },
+	{ name: "Music", tip: "Art form with sound and rhythm" },
+	{ name: "Smile", tip: "Facial expression of happiness" },
+	{ name: "Mountain", tip: "Elevated landform with a peak" },
+	{ name: "Bird", tip: "Feathered, winged animal" },
+	{ name: "Dance", tip: "Rhythmic movement to music" },
+	{ name: "Candle", tip: "Wax object with a wick for lighting" },
+	{ name: "Color", tip: "Visual perception created by light" },
+	{ name: "Rain", tip: "Precipitation in liquid form from clouds" },
+	{ name: "Home", tip: "Place of residence" },
+	{ name: "Time", tip: "Measurement of events and intervals" },
+	{ name: "Food", tip: "Edible substances for nourishment" },
+	{ name: "Love", tip: "Deep affection or strong emotional attachment" },
+	{ name: "City", tip: "Large human settlement" },
+	{ name: "Key", tip: "Device for opening locks" },
+	{ name: "Fish", tip: "Aquatic animal with gills and fins" },
+	{ name: "Door", tip: "Entryway or barrier with hinges" },
+	{ name: "Mountain", tip: "Elevated landform with a peak" },
+	{ name: "Road", tip: "Path for vehicles or pedestrians" },
+	{ name: "Lively", tip: "Full of life and energy" },
+	{ name: "Harmony", tip: "A pleasing arrangement of parts" },
+	{ name: "Gentle", tip: "Kind and mild in temperament" },
+	{ name: "Mirthful", tip: "Full of joy and laughter" },
+	{ name: "Serene", tip: "Calm and peaceful" },
+	{ name: "Amiable", tip: "Friendly and pleasant" },
+	{ name: "Radiant", tip: "Shining brightly" },
+	{ name: "Tranquil", tip: "Calm and quiet" },
+	{ name: "Dazzling", tip: "Brilliantly impressive" },
+	{ name: "Vivid", tip: "Bright and distinct" },
+	{ name: "Graceful", tip: "Elegant and refined in movement" },
+	{ name: "Charming", tip: "Pleasant and attractive" },
+	{ name: "Cordial", tip: "Warm and friendly" },
+	{ name: "Jubilant", tip: "Exultantly joyful" },
+	{ name: "Pleasant", tip: "Enjoyable and agreeable" },
+	{ name: "Soothing", tip: "Calming and comforting" },
+	{ name: "Delightful", tip: "Highly pleasing" },
+	{ name: "Wholesome", tip: "Conducive to good health" },
+	{ name: "Cheerful", tip: "Full of good spirits" },
+	{ name: "Amicable", tip: "Characterized by friendliness" },
 ];
 
 var randomName = "";
@@ -136,6 +179,26 @@ const lossHTML = document.querySelector(".loss span");
 const ratioHTML = document.querySelector(".ratio span");
 const pointsHTML = document.querySelector(".points span");
 
+function gameOver() {
+	multiplier = 1;
+	multiplierHTML.innerHTML = "";
+	console.log("Game over!");
+	gameover = true;
+	addSound("loss");
+	setTimeout(function () {
+		let allAudio = document.querySelectorAll("audio");
+		allAudio.forEach((audioElement) => audioElement.remove());
+	}, 2500);
+
+	loss += 1;
+	lossHTML.innerHTML = loss;
+	updateRatio();
+	setTimeout(() => {
+		gameover = false;
+		resetGame();
+	}, 2500);
+}
+
 function checkWin() {
 	// Get all spans inside insertLetters
 	const spans = insertLetters.querySelectorAll("span");
@@ -150,9 +213,25 @@ function checkWin() {
 
 	if (allActive) {
 		multiplier += 1;
+		multiplierHTML.classList.add("multion");
 		multiplierHTML.innerHTML = "x" + multiplier;
+		setTimeout(() => {
+			multiplierHTML.classList.remove("multion");
+		}, 100);
 		console.log("You win!");
 		addSound("win");
+		addSound("tada");
+
+		circleHtml = '<div class="circle"></div>';
+		bodyTag.insertAdjacentHTML("beforeend", circleHtml);
+
+		setTimeout(() => {
+			let removetag = document.querySelectorAll(".circle");
+			removetag.forEach((tag) => {
+				tag.remove();
+			});
+		}, 2000);
+
 		wins += 1;
 		winsHTML.innerHTML = wins;
 		let numberOfSpans = letters.children.length;
@@ -170,24 +249,7 @@ function checkWin() {
 
 		// Add your win logic here
 	} else if (isBodyVisible) {
-		multiplier = 1;
-		multiplierHTML.innerHTML = "";
-		console.log("Game over!");
-		gameover = true;
-		addSound("loss");
-		setTimeout(function () {
-			let allAudio = document.querySelectorAll("audio");
-			allAudio.forEach((audioElement) => audioElement.remove());
-		}, 2500);
-
-		loss += 1;
-		lossHTML.innerHTML = loss;
-		updateRatio();
-		setTimeout(() => {
-			gameover = false;
-			resetGame();
-		}, 2500);
-		// Add your game over logic here
+		gameOver();
 	} else {
 		console.log("Not all letters are active yet.");
 	}
@@ -224,9 +286,12 @@ function addSound(soundfile) {
 
 document.addEventListener("keydown", (e) => {
 	e.preventDefault();
-
+	if (musicTag.paused) {
+		musicTag.play();
+	}
 	if (!gameover) {
 		addSound("key");
+		pTag.style.display = "none";
 		if (/^[a-zA-Z ]$/.test(e.key)) {
 			let letter = e.key.toUpperCase();
 
@@ -303,7 +368,7 @@ document.addEventListener("keydown", (e) => {
 
 function resetGame() {
 	audioNo = 0;
-
+	pTag.style.display = "block";
 	letters.innerHTML = "";
 	writtenLetters = [];
 	ground.style.display = "none";
