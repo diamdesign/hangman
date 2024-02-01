@@ -787,6 +787,7 @@ function gameOver() {
 	if (gameover) {
 		return;
 	}
+	clearInterval(countdownInterval);
 	multiplier = 1;
 	multiplierHTML.innerHTML = "";
 	console.log("Game over!");
@@ -801,7 +802,7 @@ function gameOver() {
 	loss += 1;
 	lossHTML.innerHTML = loss;
 	updateRatio();
-	clearInterval(countdownInterval);
+
 	setTimeout(() => {
 		gameover = false;
 		resetGame();
@@ -1024,12 +1025,12 @@ function startCountdown() {
 			addSound("ticking");
 		}
 		// Check if countdown has reached 0
-		if (countdownValue === 1) {
-			setTimeout(() => {
-				// Stop the countdown
-				clearInterval(countdownInterval);
+		if (countdownValue <= 0) {
+			// Stop the countdown
+			clearInterval(countdownInterval);
+			if (!gameove) {
 				gameOver();
-			}, 1000);
+			}
 		}
 	}, 1000);
 }
