@@ -784,6 +784,9 @@ const ratioHTML = document.querySelector(".ratio span");
 const pointsHTML = document.querySelector(".points span");
 
 function gameOver() {
+	if (gameover) {
+		return;
+	}
 	multiplier = 1;
 	multiplierHTML.innerHTML = "";
 	console.log("Game over!");
