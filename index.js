@@ -5,8 +5,81 @@ const pTag = document.querySelector("p");
 
 letters.innerHTML = "";
 
+var highscore;
+
+// Retrieve highscore from localStorage
+var storedHighscore = localStorage.getItem("HIGHSCORE");
+
+// Check if storedHighscore is null or undefined
+if (storedHighscore === null || storedHighscore === undefined) {
+	// Initialize highscore as an empty array
+	highscore = [];
+} else {
+	// Parse the storedHighscore if it's not null
+	highscore = JSON.parse(storedHighscore);
+}
+
+console.log(highscore);
+
+const totalGamesHTML = document.querySelector(".totalgames span");
+const totalQuestionsHTML = document.querySelector(".totalquestions span");
+const totalWinsHTML = document.querySelector(".totalwins span");
+const totalLossHTML = document.querySelector(".totalloss span");
+const totalRatioHTML = document.querySelector(".totalratio span");
+const avgPointsHTML = document.querySelector(".avgpoints span");
+const highMultiHTML = document.querySelector(".highestmultiplier span");
+
+var totalGames = highscore.length;
+var totalQuestions = 0;
+var totalWins = 0;
+var totalLoss = 0;
+var totalRatio = 0;
+var totalPoints = 0;
+var totalHighestMultiplier = 0;
+
+function updateTotalScore() {
+	totalGames = highscore.length;
+	totalQuestions = 0;
+	totalWins = 0;
+	totalLoss = 0;
+	totalRatio = 0;
+	totalPoints = 0;
+	totalHighestMultiplier = 0;
+	for (let i = 0; i < highscore.length; i++) {
+		let game = highscore[i];
+
+		// Accumulate counts
+		totalQuestions += game.questions;
+		totalWins += game.wins;
+		totalLoss += game.loss;
+		totalRatio += game.ratio;
+		totalPoints += game.points;
+
+		// Update totalHighestMultiplier if the current game's highestmultiplier is greater
+		totalHighestMultiplier = Math.max(totalHighestMultiplier, game.highestmultiplier);
+	}
+	totalRatio = totalRatio !== null ? totalRatio : 0;
+	totalPoints = totalPoints !== null ? totalPoints : 0;
+
+	// Calculate averages
+	var averageRatio = totalGames !== 0 ? totalRatio / totalGames : 0;
+	var averagePoints = totalGames !== 0 ? totalPoints / totalGames : 0;
+
+	totalGamesHTML.textContent = totalGames;
+	totalWinsHTML.textContent = totalWins;
+	totalLossHTML.textContent = totalLoss;
+	totalQuestionsHTML.textContent = totalQuestions;
+	totalRatioHTML.textContent = averageRatio;
+	avgPointsHTML.textContent = averagePoints;
+	highMultiHTML.textContent = totalHighestMultiplier;
+}
+updateTotalScore();
+
+var questions = 0;
+var finished = false;
 var gameover = false;
 var multiplier = 1;
+var highestMultiplier = 0;
 var points = 0;
 var wins = 0;
 var loss = 0;
@@ -758,14 +831,15 @@ var insertLetters = document.querySelector(".letters");
 const multiplierHTML = document.querySelector(".multiplier");
 
 function getRandomWord() {
+	questions++;
 	let randomIndex = Math.floor(Math.random() * hangwordsList.length);
 	let randomWord = hangwordsList[randomIndex];
 
 	randomName = randomWord.name.toUpperCase();
 	randomTip = randomWord.tip;
 
-	/* console.log("Random Word: " + randomName); */
-	console.log("Tip: " + randomTip);
+	// console.log("Random Word: " + randomName);
+	// console.log("Tip: " + randomTip);
 
 	// Assuming you have a randomTip variable
 	header.textContent = randomTip;
@@ -790,7 +864,7 @@ function gameOver() {
 	clearInterval(countdownInterval);
 	multiplier = 1;
 	multiplierHTML.innerHTML = "";
-	console.log("Game over!");
+	console.log("Wrong!");
 	gameover = true;
 	addSound("loss");
 	addSound("incorrect");
@@ -819,10 +893,14 @@ function checkWin() {
 	const computedStyle = window.getComputedStyle(body);
 	const isBodyVisible = computedStyle.display !== "none";
 
-	console.log("isBodyVisible:", isBodyVisible);
+	/* console.log("isBodyVisible:", isBodyVisible); */
 
 	if (allActive) {
+		gameover = true;
 		multiplier += 1;
+		if (highestMultiplier < multiplier) {
+			highestMultiplier = multiplier;
+		}
 		multiplierHTML.classList.add("multion");
 		multiplierHTML.innerHTML = "x" + multiplier;
 		setTimeout(() => {
@@ -854,6 +932,7 @@ function checkWin() {
 		pointsHTML.innerHTML = points;
 		updateRatio();
 		setTimeout(() => {
+			gameover = false;
 			resetGame();
 		}, 400);
 
@@ -861,13 +940,14 @@ function checkWin() {
 	} else if (isBodyVisible) {
 		gameOver();
 	} else {
-		console.log("Not all letters are active yet.");
+		/* console.log("Not all letters are active yet."); */
 	}
 }
 
 function updateRatio() {
 	let newRatio = wins / loss;
 	ratioHTML.innerHTML = newRatio.toFixed(2);
+	ratio = newRatio;
 }
 
 const audioKey = document.getElementById("audio-key");
@@ -909,13 +989,13 @@ document.addEventListener("keydown", (e) => {
 			let letter = e.key.toUpperCase();
 
 			if (!writtenLetters.includes(letter)) {
-				console.log("New letter:", letter);
+				/* console.log("New letter:", letter); */
 				const newLetter = `<span>${letter}</span>`;
 				letters.insertAdjacentHTML("beforeend", newLetter);
 				writtenLetters.push(letter);
 				if (randomName.includes(letter)) {
 					addSound("correct");
-					console.log("Letter is included...");
+					/* console.log("Letter is included..."); */
 					// Find all indices where the inputLetter occurs in the hangword
 					const indices = [];
 					for (let i = 0; i < randomName.length; i++) {
@@ -976,7 +1056,7 @@ document.addEventListener("keydown", (e) => {
 				checkWin();
 			}
 		} else {
-			console.log("Letter already written:", letter);
+			/* console.log("Letter already written:", letter); */
 		}
 	}
 });
@@ -996,6 +1076,7 @@ function resetGame() {
 	insertLetters.innerHTML = "";
 	bodyTag.style.background =
 		"radial-gradient(circle, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 1) 100%)";
+	gameover = false;
 	getRandomWord();
 	resetCountdown();
 }
@@ -1028,7 +1109,7 @@ function startCountdown() {
 		if (countdownValue <= 0) {
 			// Stop the countdown
 			clearInterval(countdownInterval);
-			if (!gameove) {
+			if (!gameover) {
 				gameOver();
 			}
 		}
@@ -1047,3 +1128,81 @@ function resetCountdown() {
 }
 
 startCountdown();
+
+let timerValue = 180;
+let timerInterval;
+
+function updateTimer() {
+	const timerElement = document.getElementById("timer");
+	const minutes = Math.floor(timerValue / 60);
+	const seconds = timerValue % 60;
+
+	// Format minutes and seconds with leading zeros if needed
+	const formattedTime = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+	timerElement.textContent = formattedTime;
+}
+
+function startTimer() {
+	updateTimer();
+
+	timerInterval = setInterval(() => {
+		timerValue--;
+		updateTimer();
+
+		if (timerValue <= 0) {
+			// Stop the countdown
+			clearInterval(timerInterval);
+			if (!finished) {
+				finishGame();
+			}
+		}
+	}, 1000);
+}
+
+function resetTimer() {
+	// Clear the existing interval
+	clearInterval(timerInterval);
+
+	// Reset the countdown value
+	timerValue = 180;
+
+	// Start a new countdown
+	startTimer();
+}
+
+startTimer();
+
+function finishGame() {
+	clearInterval(timerInterval);
+	clearInterval(countdownInterval);
+	// Add your finishGame logic here
+	finished = true;
+	alert("Game Finished!");
+
+	let currentHighscore = {
+		points: points,
+		wins: wins,
+		loss: loss,
+		ratio: ratio,
+		questions: questions,
+		highestmultiplier: highestMultiplier,
+	};
+	console.log(currentHighscore);
+	highscore.push(currentHighscore);
+
+	localStorage.setItem("HIGHSCORE", JSON.stringify(highscore));
+	updateTotalScore();
+	startGame();
+}
+
+function startGame() {
+	finished = false;
+	gameover = false;
+	questions = 0;
+	highestMultiplier = 0;
+
+	resetTimer();
+	resetCountdown();
+	startTimer();
+	resetGame();
+}
