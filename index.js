@@ -69,8 +69,8 @@ function updateTotalScore() {
 	totalWinsHTML.textContent = totalWins;
 	totalLossHTML.textContent = totalLoss;
 	totalQuestionsHTML.textContent = totalQuestions;
-	totalRatioHTML.textContent = averageRatio;
-	avgPointsHTML.textContent = averagePoints;
+	totalRatioHTML.textContent = averageRatio.toFixed(2);
+	avgPointsHTML.textContent = averagePoints.toFixed(2);
 	highMultiHTML.textContent = totalHighestMultiplier;
 }
 updateTotalScore();
@@ -905,7 +905,7 @@ function checkWin() {
 		multiplierHTML.innerHTML = "x" + multiplier;
 		setTimeout(() => {
 			multiplierHTML.classList.remove("multion");
-		}, 100);
+		}, 800);
 		console.log("You win!");
 		addSound("win");
 		addSound("tada");
@@ -1177,7 +1177,7 @@ function finishGame() {
 	clearInterval(countdownInterval);
 	// Add your finishGame logic here
 	finished = true;
-	alert("Game Finished!");
+	alert("Game Finished! Click ok to start a new 3 minute game.");
 
 	let currentHighscore = {
 		points: points,

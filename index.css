@@ -230,10 +230,11 @@ p {
 	font-size: 42px;
 	filter: drop-shadow(0 0 1px black) drop-shadow(0 0 1px black) drop-shadow(0 0 1px black);
 	color: yellow;
+	transition: scale 0.8s ease-in-out;
 }
 
 .multion {
-	animation: multi 0.5s 1 forwards;
+	animation: multi 0.8s 1 forwards;
 }
 
 @keyframes multi {
