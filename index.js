@@ -1192,6 +1192,12 @@ function finishGame() {
 
 	localStorage.setItem("HIGHSCORE", JSON.stringify(highscore));
 	updateTotalScore();
+	multiplier = 1;
+	multiplierHTML.textContent = "";
+	winsHTML.textContent = "0";
+	lossHTML.textContent = "0";
+	ratioHTML.textContent = "0.00";
+	pointsHTML.textContent = "0";
 	startGame();
 }
 
